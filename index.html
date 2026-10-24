@@ -1,6 +1,10 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>*{box-sizing:border-box}html,body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>Bạn hợp bộ manga nào?</title>
-<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Be+Vietnam+Pro:wght@400;500;700;800&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -136,6 +140,8 @@ footer { font-size: 12.5px; color: var(--ink-soft); display: grid; gap: 8px; }
 footer button.link { font: inherit; background: none; border: 0; color: var(--ink-soft); text-decoration: underline; cursor: pointer; padding: 0; justify-self: start; }
 .cfg { display: grid; gap: 10px; border: 2px dashed var(--ink-soft); padding: 12px; border-radius: 3px; }
 </style>
+</head>
+<body>
 
 <div class="wrap">
   <div class="topbar">
@@ -257,7 +263,7 @@ footer button.link { font: inherit; background: none; border: 0; color: var(--in
 </div>
 
 <script>
-// ===== Cấu hình chính thức: nhóm gửi URL cho Claude để điền vào đây và xuất bản lại =====
+// ===== CẤU HÌNH: dán 2 đường link vào giữa dấu ngoặc kép bên dưới rồi lưu file =====
 const CONFIG = {
   WEBHOOK_URL: "",   // Production URL của node Webhook trong workflow WF3
   CHAT_URL: ""       // Link chat công khai của workflow chatbot Tập Tiếp
@@ -444,8 +450,13 @@ $("share-form").addEventListener("submit", async (e) => {
       done({ ma_thanh_vien: "FHS" + (9000 + Math.floor(Math.random() * 999)), demo: true });
     } else {
       const res = await fetch(hook, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data.ok) throw new Error(data.ly_do || ("Máy chủ trả lỗi " + res.status));
+      const raw = await res.text();
+      let data = {}; try { data = JSON.parse(raw); } catch (e) {}
+      if (Array.isArray(data)) data = data[0] || {};
+      if (data && data.json && data.ok === undefined) data = data.json;
+      if (!res.ok || !data.ok || !data.ma_thanh_vien) {
+        throw new Error(data.ly_do || ("n8n trả mã " + res.status + " nhưng không kèm mã thành viên. Nội dung nhận được: " + (raw.slice(0, 160) || "(trống)")));
+      }
       done(data);
     }
   } catch (ex) {
@@ -489,4 +500,5 @@ $("cfg-save").addEventListener("click", () => {
 });
 </script>
 
-</body></html>
+</body>
+</html>
