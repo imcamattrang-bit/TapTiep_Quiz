@@ -1,0 +1,492 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Bạn hợp bộ manga nào?</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Be+Vietnam+Pro:wght@400;500;700;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: một cột "trang truyện" — mỗi bước là một khung tranh viền mực, nhảy khung như lật trang. */
+:root {
+  --paper: #F4F5F9;
+  --panel: #FFFFFF;
+  --ink: #17161D;
+  --ink-soft: #55546A;
+  --line: #17161D;
+  --tone: rgba(23,22,29,.13);
+  --accent: #2A47D8;
+  --accent-ink: #FFFFFF;
+  --pop: #FFD23F;
+  --pop-ink: #17161D;
+  --ok: #1F8A55;
+  --warn: #B4462A;
+  --code-bg: #EEF0F7;
+  --f-display: "Bungee", "Be Vietnam Pro", system-ui, sans-serif;
+  --f-body: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #121218; --panel: #1C1C25; --ink: #EDEDF3; --ink-soft: #A6A5BA; --line: #D9D9E6;
+    --tone: rgba(237,237,243,.10); --accent: #8096FF; --accent-ink: #0E0F1A; --pop: #FFD23F; --pop-ink: #17161D;
+    --ok: #5FD195; --warn: #FF8E6E; --code-bg: #15151C; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #121218; --panel: #1C1C25; --ink: #EDEDF3; --ink-soft: #A6A5BA; --line: #D9D9E6;
+  --tone: rgba(237,237,243,.10); --accent: #8096FF; --accent-ink: #0E0F1A; --pop: #FFD23F; --pop-ink: #17161D;
+  --ok: #5FD195; --warn: #FF8E6E; --code-bg: #15151C; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--paper); color: var(--ink); font-family: var(--f-body); font-size: 16px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px 40px;
+}
+.wrap { max-width: 640px; margin: 0 auto; display: grid; gap: 16px; }
+.topbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 12.5px; color: var(--ink-soft); }
+.brand { font-family: var(--f-display); font-size: 15px; color: var(--ink); letter-spacing: .02em; }
+.proto { border: 1.5px dashed var(--ink-soft); padding: 2px 8px; border-radius: 3px; }
+.panel {
+  background: var(--panel); border: 2.5px solid var(--line); border-radius: 4px;
+  box-shadow: 6px 6px 0 var(--line); padding: 24px; display: grid; gap: 18px; min-width: 0;
+}
+.panel.enter { animation: slam .32s cubic-bezier(.2,.9,.3,1.2); }
+@keyframes slam { from { transform: translate(10px, -8px) rotate(.6deg); opacity: .4; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .panel.enter { animation: none; } }
+.hero {
+  background-color: var(--panel);
+  background-image: radial-gradient(var(--tone) 1.3px, transparent 1.4px);
+  background-size: 9px 9px;
+}
+.eyebrow { font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--f-display); font-weight: 400; font-size: clamp(30px, 8vw, 46px); line-height: 1.05; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--f-display); font-weight: 400; font-size: clamp(22px, 5.6vw, 28px); line-height: 1.15; margin: 0; text-wrap: balance; }
+p { margin: 0; max-width: 62ch; }
+.muted { color: var(--ink-soft); font-size: 14px; }
+.sfx {
+  display: inline-block; background: var(--pop); color: var(--pop-ink); font-family: var(--f-display);
+  padding: 2px 10px; border: 2px solid var(--line); transform: rotate(-2deg); font-size: 14px; justify-self: start;
+}
+.field { display: grid; gap: 6px; }
+label.lbl { font-weight: 700; font-size: 14px; }
+input[type="number"], input[type="text"], select {
+  font: inherit; color: var(--ink); background: var(--paper); border: 2px solid var(--line); border-radius: 3px;
+  padding: 10px 12px; width: 100%; max-width: 100%;
+}
+input:focus-visible, select:focus-visible, button:focus-visible, .opt:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.btn {
+  font: inherit; font-weight: 800; cursor: pointer; border: 2.5px solid var(--line); border-radius: 3px;
+  background: var(--accent); color: var(--accent-ink); padding: 12px 20px; box-shadow: 3px 3px 0 var(--line);
+  transition: transform .08s, box-shadow .08s; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+}
+.btn:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 var(--line); }
+.btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 var(--line); }
+.btn[disabled] { opacity: .45; cursor: not-allowed; transform: none; }
+.btn.ghost { background: var(--panel); color: var(--ink); }
+.row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.err { color: var(--warn); font-size: 14px; font-weight: 700; }
+
+/* Tiến độ: dải khung tranh nhỏ */
+.strip { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; }
+.strip span { height: 10px; border: 2px solid var(--line); border-radius: 2px; background: var(--panel); }
+.strip span.done { background: var(--ink); }
+.strip span.now { background: var(--pop); }
+.qmeta { display: flex; justify-content: space-between; font-size: 13px; color: var(--ink-soft); font-weight: 700; }
+
+.opts { display: grid; gap: 10px; }
+.opt {
+  text-align: left; font: inherit; color: var(--ink); background: var(--panel); cursor: pointer;
+  border: 2px solid var(--line); border-radius: 3px; padding: 12px 14px; display: grid; grid-template-columns: 30px 1fr; gap: 10px; align-items: center;
+}
+.opt b { font-family: var(--f-display); font-weight: 400; font-size: 15px; width: 28px; height: 28px; display: grid; place-items: center; border: 2px solid var(--line); border-radius: 50%; }
+.opt:hover { background: var(--paper); }
+.opt.picked { background: var(--pop); color: var(--pop-ink); }
+.opt.picked b { background: var(--ink); color: var(--panel); }
+
+/* Kết quả */
+.persona { display: grid; gap: 8px; padding: 18px; border: 2.5px solid var(--line); background: var(--pop); color: var(--pop-ink); transform: rotate(-.6deg); }
+.persona .pname { font-family: var(--f-display); font-size: clamp(24px, 6.5vw, 34px); line-height: 1.05; }
+.picks { display: grid; gap: 10px; }
+.pick { display: grid; grid-template-columns: 44px 1fr; gap: 12px; align-items: start; border-top: 2px solid var(--line); padding-top: 12px; }
+.pick:first-child { border-top: 0; padding-top: 0; }
+.rank { font-family: var(--f-display); font-size: 26px; line-height: 1; color: var(--accent); }
+.pick h3 { margin: 0 0 2px; font-size: 17px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.chip { font-size: 12px; font-weight: 700; border: 1.5px solid var(--ink-soft); color: var(--ink-soft); border-radius: 999px; padding: 1px 8px; }
+.match { font-family: var(--f-mono); font-size: 12.5px; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+
+.check { display: grid; grid-template-columns: 22px 1fr; gap: 10px; align-items: start; font-size: 14.5px; }
+.check input { width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--accent); }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 480px) { .grid2 { grid-template-columns: 1fr; } .panel { padding: 18px; box-shadow: 4px 4px 0 var(--line); } }
+.notice { border-left: 4px solid var(--warn); padding: 10px 12px; background: var(--paper); font-size: 14px; }
+.notice.ok { border-left-color: var(--ok); }
+
+details.data { border: 2px dashed var(--ink-soft); border-radius: 3px; padding: 10px 12px; }
+details.data summary { cursor: pointer; font-weight: 700; font-size: 14px; }
+pre.json { margin: 10px 0 0; background: var(--code-bg); color: var(--ink); font-family: var(--f-mono); font-size: 12px; line-height: 1.5; padding: 12px; overflow-x: auto; border-radius: 3px; white-space: pre; }
+
+.code-big { font-family: var(--f-mono); font-weight: 600; font-size: clamp(26px, 8vw, 38px); letter-spacing: .06em; padding: 10px 16px; border: 2.5px solid var(--line); background: var(--paper); justify-self: start; font-variant-numeric: tabular-nums; }
+.flow { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 6px; font-size: 12px; font-weight: 700; text-align: center; }
+.flow div { border: 2px solid var(--line); padding: 8px 4px; border-radius: 3px; background: var(--paper); }
+.flow div.on { background: var(--ink); color: var(--panel); }
+@media (max-width: 480px) { .flow { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+
+footer { font-size: 12.5px; color: var(--ink-soft); display: grid; gap: 8px; }
+footer button.link { font: inherit; background: none; border: 0; color: var(--ink-soft); text-decoration: underline; cursor: pointer; padding: 0; justify-self: start; }
+.cfg { display: grid; gap: 10px; border: 2px dashed var(--ink-soft); padding: 12px; border-radius: 3px; }
+</style>
+
+<div class="wrap">
+  <div class="topbar">
+    <span class="brand">TẬP TIẾP</span>
+    <span class="proto">Prototype đồ án Martech · không phải trang chính thức của FAHASA</span>
+  </div>
+
+  <!-- 0. Mở đầu -->
+  <section class="panel hero" id="s-intro">
+    <span class="eyebrow">Hè này đọc gì · Quiz 6 câu · 1 phút</span>
+    <h1>Bạn hợp bộ manga nào?</h1>
+    <p>Trả lời 6 câu về gu đọc, nhận ngay danh hiệu độc giả và 3 bộ truyện hợp với bạn. Muốn trợ lý Tập Tiếp nhớ gu để tư vấn tiếp thì bạn tự chọn chia sẻ ở cuối, không bắt buộc.</p>
+    <div class="field" style="max-width:220px">
+      <label class="lbl" for="age">Bạn bao nhiêu tuổi?</label>
+      <input id="age" type="number" inputmode="numeric" min="8" max="99" placeholder="Ví dụ: 19">
+    </div>
+    <p class="muted">Tuổi dùng để chỉ gợi ý truyện phù hợp độ tuổi.</p>
+    <div class="row">
+      <button class="btn" id="start">Bắt đầu quiz</button>
+      <span class="err" id="age-err" hidden></span>
+    </div>
+  </section>
+
+  <!-- 1. Câu hỏi -->
+  <section class="panel" id="s-quiz" hidden>
+    <div class="strip" id="strip"></div>
+    <div class="qmeta"><span id="qnum"></span><span id="qtag"></span></div>
+    <h2 id="qtext"></h2>
+    <div class="opts" id="opts"></div>
+    <div class="row"><button class="btn ghost" id="back">Câu trước</button></div>
+  </section>
+
+  <!-- 2. Kết quả -->
+  <section class="panel" id="s-result" hidden>
+    <span class="sfx">KẾT QUẢ!</span>
+    <div class="persona">
+      <span class="eyebrow" style="color:inherit">Danh hiệu của bạn</span>
+      <span class="pname" id="pname"></span>
+      <p id="pdesc"></p>
+    </div>
+    <h2>3 bộ hợp gu nhất</h2>
+    <div class="picks" id="picks"></div>
+    <div class="row">
+      <button class="btn" id="to-share">Lưu gu để Tập Tiếp tư vấn</button>
+      <button class="btn ghost" id="redo">Làm lại</button>
+    </div>
+  </section>
+
+  <!-- 3. Chia sẻ dữ liệu (zero-party) -->
+  <section class="panel" id="s-share" hidden>
+    <span class="eyebrow">Bước tùy chọn · Bạn quyết định</span>
+    <h2>Cho Tập Tiếp nhớ gu của bạn</h2>
+    <div class="notice" id="minor-note" hidden>Bạn dưới 16 tuổi nên hệ thống không lưu hồ sơ khi chưa có sự đồng ý của cha mẹ. Kết quả quiz vẫn là của bạn, cứ chụp màn hình lại nhé.</div>
+    <form id="share-form" novalidate>
+      <div style="display:grid;gap:14px">
+        <div class="field">
+          <label class="lbl" for="nick">Tên gọi (không cần tên thật)</label>
+          <input id="nick" type="text" maxlength="30" placeholder="Ví dụ: Minh Anh" autocomplete="nickname">
+        </div>
+        <div class="grid2">
+          <div class="field">
+            <label class="lbl" for="store">Cửa hàng hay ghé</label>
+            <select id="store">
+              <option value="online">Chỉ mua online</option>
+              <option value="HCM-Q1">TP.HCM · Quận 1</option>
+              <option value="HCM-Q3">TP.HCM · Quận 3</option>
+              <option value="HN-CG">Hà Nội · Cầu Giấy</option>
+              <option value="DN-HC">Đà Nẵng · Hải Châu</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="lbl" for="channel">Muốn nhận tin qua</label>
+            <select id="channel">
+              <option value="zalo_oa">Zalo OA</option>
+              <option value="app">Thông báo app</option>
+              <option value="email">Email</option>
+            </select>
+          </div>
+        </div>
+        <label class="check"><input id="consent" type="checkbox"><span><b>Đồng ý cá nhân hóa (bắt buộc để lưu).</b> Lưu tuổi, gu đọc, cửa hàng và kênh liên lạc ở trên để trợ lý Tập Tiếp gợi ý truyện cho riêng bạn. Không thu số điện thoại, email hay CCCD. Bạn có thể yêu cầu xóa bất cứ lúc nào.</span></label>
+        <label class="check"><input id="alerts" type="checkbox"><span>Báo mình khi bộ truyện hợp gu ra tập mới (tùy chọn, tắt được bất cứ lúc nào).</span></label>
+        <details class="data" id="preview">
+          <summary>Xem chính xác dữ liệu sẽ gửi đi</summary>
+          <pre class="json" id="payload"></pre>
+        </details>
+        <div class="row">
+          <button class="btn" id="send" type="submit">Lưu và lấy mã thành viên</button>
+          <button class="btn ghost" id="skip" type="button">Không lưu, cảm ơn</button>
+        </div>
+        <span class="err" id="send-err" hidden></span>
+      </div>
+    </form>
+  </section>
+
+  <!-- 4. Hoàn tất -->
+  <section class="panel" id="s-done" hidden>
+    <span class="sfx" id="done-sfx">ĐÃ LƯU!</span>
+    <h2 id="done-title">Mã thành viên của bạn</h2>
+    <div class="code-big" id="member-code"></div>
+    <div class="row"><button class="btn ghost" id="copy">Sao chép mã</button><span class="muted" id="copy-msg"></span></div>
+    <p id="done-text">Gửi mã này cho trợ lý Tập Tiếp, bot sẽ đọc gu bạn vừa chia sẻ và gợi ý tập 1 của các bộ hợp gu, kèm cửa hàng còn hàng gần bạn.</p>
+    <div class="row"><a class="btn" id="chat-link" href="#" target="_blank" rel="noopener">Chat với Tập Tiếp</a></div>
+    <div class="notice" id="demo-note" hidden></div>
+    <div>
+      <p class="muted" style="margin-bottom:8px">Dữ liệu của bạn đã đi qua:</p>
+      <div class="flow"><div class="on">Quiz</div><div class="on" id="f2">n8n Webhook</div><div class="on" id="f3">CDP mini</div><div class="on">Trợ lý AI</div></div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Dữ liệu catalog là dữ liệu mô phỏng cho chiến dịch hè 2027. Trang này do nhóm sinh viên xây dựng để minh họa thu thập dữ liệu do khách tự nguyện chia sẻ (zero-party data).</span>
+    <button class="link" id="cfg-toggle" type="button">Cài đặt demo (cho nhóm)</button>
+    <div class="cfg" id="cfg" hidden>
+      <div class="field"><label class="lbl" for="cfg-hook">URL webhook n8n (Production URL)</label><input id="cfg-hook" type="text" placeholder="https://…/webhook/tap-tiep-quiz"></div>
+      <div class="field"><label class="lbl" for="cfg-chat">Link chat công khai của Tập Tiếp</label><input id="cfg-chat" type="text" placeholder="https://…/webhook/…/chat"></div>
+      <div class="row"><button class="btn ghost" id="cfg-save" type="button">Lưu trên trình duyệt này</button><span class="muted" id="cfg-msg"></span></div>
+    </div>
+  </footer>
+</div>
+
+<script>
+// ===== Cấu hình chính thức: nhóm gửi URL cho Claude để điền vào đây và xuất bản lại =====
+const CONFIG = {
+  WEBHOOK_URL: "",   // Production URL của node Webhook trong workflow WF3
+  CHAT_URL: ""       // Link chat công khai của workflow chatbot Tập Tiếp
+};
+
+// Catalog rút gọn, khớp tab catalog của "Tập Tiếp – CDP mini"
+const SERIES = {
+  "S-001": { name: "Thám Tử Lừng Danh Conan", genre: "trinh thám, học đường", minAge: 0, vols: "104 tập", hook: "Mỗi tập vài vụ án khép kín, đọc lẻ vẫn trọn vẹn." },
+  "S-002": { name: "One Piece", genre: "phiêu lưu, hành động", minAge: 0, vols: "108 tập", hook: "Hành trình biển cả dài hơi, tình bạn là động cơ chính." },
+  "S-003": { name: "Spy x Family", genre: "hài hước, hành động, gia đình", minAge: 0, vols: "13 tập", hook: "Ba người giữ ba bí mật, giả làm một gia đình." },
+  "S-004": { name: "Jujutsu Kaisen", genre: "hành động, siêu nhiên", minAge: 16, vols: "27 tập", hook: "Chú thuật, nguyền hồn và những trận đấu nghẹt thở." },
+  "S-005": { name: "Doraemon", genre: "hài hước, gia đình", minAge: 0, vols: "45 tập (đủ bộ)", hook: "Bảo bối tương lai, đọc lại lúc nào cũng thấy nhẹ lòng." },
+  "S-006": { name: "Blue Lock", genre: "thể thao, hành động", minAge: 13, vols: "20 tập", hook: "300 tiền đạo, chỉ một người được đứng cuối cùng." },
+  "S-007": { name: "Frieren – Pháp Sư Tiễn Táng", genre: "fantasy, phiêu lưu, chữa lành", minAge: 0, vols: "12 tập", hook: "Hành trình chậm rãi sau khi chuyến phiêu lưu lớn đã kết thúc." },
+  "S-008": { name: "Dược Sư Tự Sự", genre: "trinh thám, cổ trang", minAge: 13, vols: "11 tập", hook: "Kiến thức thuốc men giải mã bí ẩn chốn hậu cung." }
+};
+
+const PERSONA = {
+  "S-001": ["Thám Tử Hóng Biến", "Bạn không chịu nổi một câu hỏi bỏ ngỏ. Đọc truyện là để tự đoán thủ phạm trước khi lật trang."],
+  "S-002": ["Thuyền Viên Trung Thành", "Bạn theo một câu chuyện tới cùng, và mê cảm giác cả hội cùng chiến đấu vì giấc mơ chung."],
+  "S-003": ["Điệp Viên Hệ Hài", "Bạn cần tiếng cười nhưng không chịu nhạt: phải có cú twist, có bí mật, có chút ấm áp."],
+  "S-004": ["Chú Thuật Sư Hệ Cháy", "Bạn đọc để tim đập nhanh. Trận đấu càng căng, thế giới càng tối, bạn càng tỉnh."],
+  "S-005": ["Người Giữ Túi Bảo Bối", "Bạn tìm sự dễ chịu trong truyện: đọc lúc nào cũng được, đọc lại vẫn vui."],
+  "S-006": ["Chân Sút Bản Năng", "Bạn mê tinh thần thi đấu và những nhân vật dám ích kỷ để vươn lên số một."],
+  "S-007": ["Pháp Sư Chữa Lành", "Bạn thích truyện chậm mà sâu, để lại dư âm rất lâu sau khi gập sách."],
+  "S-008": ["Quân Sư Hậu Cung", "Bạn mê trí tuệ hơn cơ bắp: một chi tiết nhỏ cũng đủ để lật cả ván cờ."]
+};
+
+// Mỗi đáp án cộng điểm cho các bộ truyện (trọng số 1–3)
+const QUESTIONS = [
+  { tag: "Tâm trạng", q: "Tối thứ Sáu lý tưởng của bạn là…", opts: [
+    { t: "Cày một bộ phim trinh thám và đoán hung thủ", w: { "S-001": 3, "S-008": 2 } },
+    { t: "Đi phượt cùng hội bạn thân", w: { "S-002": 3, "S-007": 1 } },
+    { t: "Lướt meme cười tới khuya", w: { "S-003": 3, "S-005": 2 } },
+    { t: "Đá bóng hoặc leo rank tới sáng", w: { "S-006": 3, "S-004": 2 } } ] },
+  { tag: "Nhân vật", q: "Kiểu nhân vật bạn hay “đu” nhất?", opts: [
+    { t: "Thiên tài lạnh lùng, nhìn là biết đáp án", w: { "S-001": 2, "S-008": 3 } },
+    { t: "Hơi ngố nhưng tốt bụng và liều hết mình", w: { "S-002": 3, "S-005": 2 } },
+    { t: "Người sống hai mặt, giấu bí mật động trời", w: { "S-003": 3, "S-004": 2 } },
+    { t: "Người ít nói nhưng mỗi câu đều thấm", w: { "S-007": 3, "S-006": 1 } } ] },
+  { tag: "Nhịp truyện", q: "Bạn thích nhịp truyện thế nào?", opts: [
+    { t: "Dồn dập, trang nào cũng có đánh nhau", w: { "S-004": 3, "S-006": 3 } },
+    { t: "Mỗi tập một câu chuyện trọn vẹn", w: { "S-001": 3, "S-005": 3 } },
+    { t: "Chậm rãi, nhiều khoảng lặng", w: { "S-007": 3, "S-008": 1 } },
+    { t: "Một hành trình dài, cài cắm từ từ", w: { "S-002": 3, "S-008": 1 } } ] },
+  { tag: "Dư âm", q: "Gập sách lại, bạn muốn cảm giác gì?", opts: [
+    { t: "“À, ra là vậy!”", w: { "S-001": 2, "S-008": 3 } },
+    { t: "Cháy, muốn đứng dậy làm gì đó ngay", w: { "S-006": 3, "S-002": 2 } },
+    { t: "Ấm lòng, nhẹ nhõm", w: { "S-007": 2, "S-003": 2, "S-005": 2 } },
+    { t: "Nổi da gà, ám ảnh cả tuần", w: { "S-004": 3 } } ] },
+  { tag: "Độ dài", q: "Bạn sẵn sàng theo một bộ dài cỡ nào?", opts: [
+    { t: "Dưới 15 tập là đẹp", w: { "S-003": 2, "S-007": 2, "S-008": 2 } },
+    { t: "20 đến 50 tập vẫn ổn", w: { "S-004": 2, "S-006": 2, "S-005": 2 } },
+    { t: "Hơn 100 tập cũng chiến", w: { "S-001": 2, "S-002": 3 } } ] },
+  { tag: "Bối cảnh", q: "Thế giới nào kéo bạn vào nhanh nhất?", opts: [
+    { t: "Trường học, phố xá đời thường", w: { "S-001": 2, "S-003": 2, "S-005": 2 } },
+    { t: "Phép thuật, quái vật, thế giới khác", w: { "S-007": 3, "S-004": 2, "S-002": 1 } },
+    { t: "Cung đình, cổ trang", w: { "S-008": 3 } },
+    { t: "Sân cỏ, giải đấu", w: { "S-006": 3 } } ] }
+];
+
+const $ = (id) => document.getElementById(id);
+const state = { age: null, i: 0, answers: [], result: null, quizId: null };
+
+function cfg() {
+  let local = {};
+  try { local = JSON.parse(localStorage.getItem("taptiep-cfg") || "{}"); } catch (e) {}
+  return { hook: local.hook || CONFIG.WEBHOOK_URL, chat: local.chat || CONFIG.CHAT_URL };
+}
+
+function show(id) {
+  ["s-intro", "s-quiz", "s-result", "s-share", "s-done"].forEach((s) => { $(s).hidden = s !== id; });
+  const el = $(id); el.classList.remove("enter"); void el.offsetWidth; el.classList.add("enter");
+  el.scrollIntoView({ block: "start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+}
+
+// ---------- Chấm điểm ----------
+function score(answers, age) {
+  const pts = {}; Object.keys(SERIES).forEach((k) => (pts[k] = 0));
+  answers.forEach((a, qi) => { const w = QUESTIONS[qi].opts[a].w; for (const k in w) pts[k] += w[k]; });
+  const max = Math.max(...Object.values(pts)) || 1;
+  const ranked = Object.keys(pts)
+    .filter((k) => SERIES[k].minAge <= age)
+    .sort((a, b) => pts[b] - pts[a] || a.localeCompare(b))
+    .slice(0, 3)
+    .map((k) => ({ id: k, pts: pts[k], pct: Math.round((pts[k] / max) * 100) }));
+  const genres = {};
+  ranked.forEach((r) => SERIES[r.id].genre.split(", ").forEach((g) => (genres[g] = (genres[g] || 0) + 1)));
+  const favGenres = Object.keys(genres).sort((a, b) => genres[b] - genres[a]).slice(0, 3);
+  return { top: ranked, persona: PERSONA[ranked[0].id], favGenres };
+}
+
+// ---------- Mở đầu ----------
+$("start").addEventListener("click", () => {
+  const v = parseInt($("age").value, 10);
+  if (!Number.isFinite(v) || v < 8 || v > 99) { $("age-err").textContent = "Nhập tuổi từ 8 đến 99 nhé."; $("age-err").hidden = false; return; }
+  $("age-err").hidden = true; state.age = v; state.i = 0; state.answers = [];
+  renderQ(); show("s-quiz");
+});
+$("age").addEventListener("keydown", (e) => { if (e.key === "Enter") $("start").click(); });
+
+// ---------- Câu hỏi ----------
+function renderQ() {
+  const Q = QUESTIONS[state.i];
+  $("strip").innerHTML = QUESTIONS.map((_, k) => `<span class="${k < state.i ? "done" : k === state.i ? "now" : ""}"></span>`).join("");
+  $("qnum").textContent = `Câu ${state.i + 1}/${QUESTIONS.length}`;
+  $("qtag").textContent = Q.tag;
+  $("qtext").textContent = Q.q;
+  $("opts").innerHTML = Q.opts.map((o, k) =>
+    `<button class="opt${state.answers[state.i] === k ? " picked" : ""}" data-k="${k}" type="button"><b>${"ABCD"[k]}</b><span>${o.t}</span></button>`).join("");
+  $("back").disabled = state.i === 0;
+}
+$("opts").addEventListener("click", (e) => {
+  const b = e.target.closest(".opt"); if (!b) return;
+  state.answers[state.i] = Number(b.dataset.k);
+  b.classList.add("picked");
+  setTimeout(() => {
+    if (state.i < QUESTIONS.length - 1) { state.i++; renderQ(); const el = $("s-quiz"); el.classList.remove("enter"); void el.offsetWidth; el.classList.add("enter"); }
+    else { finish(); }
+  }, 180);
+});
+$("back").addEventListener("click", () => { if (state.i > 0) { state.i--; renderQ(); } });
+
+// ---------- Kết quả ----------
+function finish() {
+  state.result = score(state.answers, state.age);
+  state.quizId = "QZ-" + Date.now().toString(36).toUpperCase();
+  const r = state.result;
+  $("pname").textContent = r.persona[0];
+  $("pdesc").textContent = r.persona[1];
+  $("picks").innerHTML = r.top.map((t, k) => {
+    const s = SERIES[t.id];
+    return `<div class="pick"><span class="rank">#${k + 1}</span><div><h3>${s.name}</h3><p class="muted">${s.hook}</p>
+      <div class="chips">${s.genre.split(", ").map((g) => `<span class="chip">${g}</span>`).join("")}<span class="chip">${s.vols}</span></div>
+      <div class="match">độ hợp gu ${t.pct}%</div></div></div>`;
+  }).join("");
+  show("s-result");
+}
+$("redo").addEventListener("click", () => show("s-intro"));
+
+// ---------- Chia sẻ dữ liệu ----------
+function payload() {
+  const r = state.result;
+  return {
+    quiz_id: state.quizId,
+    ten: $("nick").value.trim(),
+    tuoi: state.age,
+    cua_hang_gan: $("store").value,
+    kenh_uu_tien: $("channel").value,
+    dong_y_ca_nhan_hoa: $("consent").checked,
+    nhan_bao_tap_moi: $("alerts").checked,
+    persona: r.persona[0],
+    the_loai_yeu_thich: r.favGenres.join(", "),
+    goi_y_quiz: r.top.map((t) => SERIES[t.id].name).join("; "),
+    goi_y_series_id: r.top.map((t) => t.id).join(";"),
+    tra_loi: state.answers.map((a, qi) => QUESTIONS[qi].tag + ": " + QUESTIONS[qi].opts[a].t).join(" | "),
+    nguon: "quiz"
+  };
+}
+function refreshPayload() { $("payload").textContent = JSON.stringify(payload(), null, 2); }
+["nick", "store", "channel", "consent", "alerts"].forEach((id) => $(id).addEventListener("input", refreshPayload));
+["store", "channel", "consent", "alerts"].forEach((id) => $(id).addEventListener("change", refreshPayload));
+
+$("to-share").addEventListener("click", () => {
+  const minor = state.age < 16;
+  $("minor-note").hidden = !minor;
+  $("share-form").hidden = minor;
+  if (!minor) refreshPayload();
+  $("send-err").hidden = true;
+  show("s-share");
+});
+$("skip").addEventListener("click", () => show("s-result"));
+
+$("share-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const err = $("send-err"); err.hidden = true;
+  if (!$("nick").value.trim()) { err.textContent = "Nhập một tên gọi để Tập Tiếp xưng hô với bạn."; err.hidden = false; return; }
+  if (!$("consent").checked) { err.textContent = "Cần tick ô đồng ý cá nhân hóa thì mới lưu được. Không muốn lưu thì bấm “Không lưu, cảm ơn”."; err.hidden = false; return; }
+  const body = payload();
+  const { hook } = cfg();
+  const btn = $("send"); btn.disabled = true; btn.textContent = "Đang lưu…";
+  try {
+    if (!hook) {
+      done({ ma_thanh_vien: "FHS" + (9000 + Math.floor(Math.random() * 999)), demo: true });
+    } else {
+      const res = await fetch(hook, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.ok) throw new Error(data.ly_do || ("Máy chủ trả lỗi " + res.status));
+      done(data);
+    }
+  } catch (ex) {
+    err.textContent = "Chưa lưu được: " + ex.message + ". Thử lại sau vài giây, hoặc báo nhóm kiểm tra workflow n8n đang bật.";
+    err.hidden = false;
+  } finally { btn.disabled = false; btn.textContent = "Lưu và lấy mã thành viên"; }
+});
+
+function done(data) {
+  $("member-code").textContent = data.ma_thanh_vien;
+  const { chat } = cfg();
+  const link = $("chat-link");
+  if (chat) { link.href = chat; link.hidden = false; } else { link.hidden = true; }
+  const demo = !!data.demo;
+  $("demo-note").hidden = !demo;
+  $("demo-note").textContent = demo ? "Chế độ demo: trang chưa nối webhook n8n nên dữ liệu chưa được lưu. Mã trên chỉ để minh họa, bot sẽ không tìm thấy." : "";
+  $("done-sfx").textContent = demo ? "DEMO!" : "ĐÃ LƯU!";
+  $("f2").classList.toggle("on", !demo); $("f3").classList.toggle("on", !demo);
+  $("copy-msg").textContent = "";
+  show("s-done");
+}
+
+$("copy").addEventListener("click", () => {
+  const code = $("member-code").textContent;
+  navigator.clipboard.writeText(code).then(() => ($("copy-msg").textContent = "Đã sao chép")).catch(() => {
+    const r = document.createRange(); r.selectNodeContents($("member-code"));
+    const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+    $("copy-msg").textContent = "Đã bôi đen mã, nhấn Ctrl+C để sao chép";
+  });
+});
+
+// ---------- Cài đặt demo ----------
+$("cfg-toggle").addEventListener("click", () => {
+  const c = cfg(); $("cfg-hook").value = c.hook; $("cfg-chat").value = c.chat; $("cfg").hidden = !$("cfg").hidden;
+});
+$("cfg-save").addEventListener("click", () => {
+  try {
+    localStorage.setItem("taptiep-cfg", JSON.stringify({ hook: $("cfg-hook").value.trim(), chat: $("cfg-chat").value.trim() }));
+    $("cfg-msg").textContent = "Đã lưu trên trình duyệt này";
+  } catch (e) { $("cfg-msg").textContent = "Trình duyệt chặn lưu cài đặt. Gửi URL cho Claude để gắn cố định vào trang."; }
+});
+</script>
+
+</body></html>
